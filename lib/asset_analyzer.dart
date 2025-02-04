@@ -129,7 +129,11 @@ class AssetAnalyzer {
   /// Analyse Repport
   Future<void> analyzeProjectAssets() async {
     try {
-      print("\n\n🔍 Début de l'analyse des assets...\n\n");
+      _printColored(
+        "\n\n🔍 Début de l'analyse des assets...\n\n",
+        ConsoleColor.blue,
+        isBold: true,
+      );
       // Récupérer toutes les données nécessaires
       final declaredAssets = await analyzeProjectAndGetFiles();
       final usedAssets = await findAssetsInLibFolder();
@@ -155,6 +159,10 @@ class AssetAnalyzer {
           assetSizes[asset] = sizeMB;
           totalUnusedSizeMB += sizeMB;
         } catch (e) {
+          _printColored(
+            "❌ \n\nErreur lors de l'analyse de la taille de l'asset : $e\n\n",
+            ConsoleColor.red,
+          );
           assetSizes[asset] = 0.0;
         }
       }
@@ -178,7 +186,10 @@ class AssetAnalyzer {
           ConsoleColor.yellow,
           isBold: true);
     } catch (e) {
-      print('\n❌ Erreur lors de l\'analyse : ${e.toString()}');
+      _printColored(
+        '\n❌ Erreur lors de l\'analyse : ${e.toString()}',
+        ConsoleColor.yellow,
+      );
     }
   }
 }
@@ -205,3 +216,6 @@ void _printColored(String text, ConsoleColor color, {bool isBold = false}) {
   final style = isBold ? '1;' : '';
   print('\u001b[${style}${color.code}m$text\u001b[0m');
 }
+
+void printColored(String text, ConsoleColor color, {bool isBold = false}) =>
+    _printColored(text, color, isBold: false);

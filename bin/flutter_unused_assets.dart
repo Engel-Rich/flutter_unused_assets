@@ -5,7 +5,7 @@ import 'package:args/args.dart';
 import 'package:flutter_unused_assets/flutter_unused_assets.dart';
 
 void main(List<String> arguments) async {
-  print("\n\n🔍 Démarrage de l'exécution...\n\n");
+  printColored("\n\n🔍 Démarrage de l'exécution...\n\n", ConsoleColor.blue);
 
   final parser = ArgParser()
     ..addFlag('help', abbr: 'h')
@@ -21,6 +21,7 @@ void main(List<String> arguments) async {
     final analyzer = AssetAnalyzer();
     await analyzer.analyzeProjectAssets();
   } catch (e) {
+    printColored("\n\nune erruer est survenue :$e\n\n", ConsoleColor.red);
     stderr.writeln('Error: $e');
     exit(1);
   }
