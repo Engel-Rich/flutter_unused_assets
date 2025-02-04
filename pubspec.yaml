@@ -1,0 +1,30 @@
+name: flutter_unused_assets
+description: "A flutter CLI package that is going to allow you to remove your unse assets and improve your app quality"
+_author: Engelbert Richelieu MBARGA <engelbertrichelieutsinda@gmail.com>
+_maintainer: Engelbert Richelieu MBARGA <engelbertrichelieutsinda@gmail.com>
+publish_to: https://github.com/Engel-Rich/flutter_unused_assets.git
+
+version: 0.0.1
+homepage: none
+
+environment:
+  sdk: ^3.6.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # args: ^2.4.2
+  path: ^1.9.0
+  pubspec_parse: ^1.2.3
+  # yaml: ^3.1.2
+  # file: ^6.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  test: ^1.24.0
+
+executables:
+  flutter_unused_assets: flutter_unused_assets
