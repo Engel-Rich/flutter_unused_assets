@@ -129,7 +129,7 @@ class AssetAnalyzer {
   /// Analyse Repport
   Future<void> analyzeProjectAssets() async {
     try {
-      print("🔍 Début de l'analyse des assets...\n");
+      print("\n\n🔍 Début de l'analyse des assets...\n\n");
       // Récupérer toutes les données nécessaires
       final declaredAssets = await analyzeProjectAndGetFiles();
       final usedAssets = await findAssetsInLibFolder();
