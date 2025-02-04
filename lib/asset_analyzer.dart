@@ -1,7 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:pubspec_parse/pubspec_parse.dart';
-import 'dart:developer';
 
 class AssetAnalyzer {
   /// Analyze the pubspec file and get the list of assets folders from it
@@ -128,6 +129,8 @@ class AssetAnalyzer {
   /// Analyse Repport
 
   Future<void> analyzeProjectAssets() async {
+    print("🔍 Analyse des assets en cours...");
+
     final analyzer = AssetAnalyzer();
 
     try {
@@ -138,20 +141,20 @@ class AssetAnalyzer {
         // print('Aucun asset trouvé dans le code.');
       } else {
         for (final asset in assets) {
-          log('- $asset');
+          print('- $asset');
         }
       }
       // Vérifier l'existence des fichiers
-      log('\nVérification de l\'existence des fichiers...');
+      print('\nVérification de l\'existence des fichiers...');
       final existence = await analyzer.verifyAssetsExistence(assets);
 
       // print('\nRésultats de la vérification :');
       existence.forEach((asset, exists) {
         final status = exists ? '✓' : '✗';
-        log('$status $asset');
+        print('$status $asset');
       });
     } catch (e) {
-      log('Erreur lors de l\'analyse : $e');
+      print('Erreur lors de l\'analyse : $e');
     }
   }
 }
