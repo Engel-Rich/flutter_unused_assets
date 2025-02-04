@@ -127,34 +127,84 @@ class AssetAnalyzer {
   }
 
   /// Analyse Repport
-
   Future<void> analyzeProjectAssets() async {
-    print("🔍 Analyse des assets en cours...");
-
     final analyzer = AssetAnalyzer();
 
     try {
-      // print('Analyse du dossier lib en cours...');
-      final assets = await analyzer.findAssetsInLibFolder();
-      // print('\nAssets trouvés :');
-      if (assets.isEmpty) {
-        // print('Aucun asset trouvé dans le code.');
-      } else {
-        for (final asset in assets) {
-          print('- $asset');
+      print("🔍 Début de l'analyse des assets...\n");
+
+      // Récupérer toutes les données nécessaires
+      final declaredAssets = await analyzer.analyzeProjectAndGetFiles();
+      final usedAssets = await analyzer.findAssetsInLibFolder();
+      final existingDeclaredAssets =
+          await analyzer.verifyAssetsExistence(declaredAssets);
+
+      // Calculer les assets non utilisés
+      final unusedAssets = declaredAssets
+          .where((asset) =>
+              !usedAssets.contains(asset) &&
+              existingDeclaredAssets[asset] == true)
+          .toList();
+
+      // Calculer la taille totale des assets non utilisés
+      double totalUnusedSizeMB = 0;
+      final assetSizes = <String, double>{};
+
+      for (final asset in unusedAssets) {
+        try {
+          final file = File(asset);
+          final sizeBytes = await file.length();
+          final sizeMB = sizeBytes / (1024 * 1024);
+          assetSizes[asset] = sizeMB;
+          totalUnusedSizeMB += sizeMB;
+        } catch (e) {
+          assetSizes[asset] = 0.0;
         }
       }
-      // Vérifier l'existence des fichiers
-      print('\nVérification de l\'existence des fichiers...');
-      final existence = await analyzer.verifyAssetsExistence(assets);
 
-      // print('\nRésultats de la vérification :');
-      existence.forEach((asset, exists) {
-        final status = exists ? '✓' : '✗';
-        print('$status $asset');
-      });
+      // Afficher les résultats
+      _printColored(
+          'ASSETS UTILISÉS (${usedAssets.length}):', ConsoleColor.green);
+      for (final asset in usedAssets) {
+        print('  $_greenCheck ${asset.padRight(60)}');
+      }
+
+      _printColored(
+          '\nASSETS NON UTILISÉS (${unusedAssets.length}):', ConsoleColor.red);
+      for (final asset in unusedAssets) {
+        final size = assetSizes[asset]?.toStringAsFixed(2) ?? '0.00';
+        print('  $_redCross ${asset.padRight(55)} $size MB');
+      }
+
+      _printColored(
+          '\nTOTAL ESPACE PERDU: ${totalUnusedSizeMB.toStringAsFixed(2)} MB',
+          ConsoleColor.yellow,
+          isBold: true);
     } catch (e) {
-      print('Erreur lors de l\'analyse : $e');
+      print('\n❌ Erreur lors de l\'analyse : ${e.toString()}');
     }
   }
+}
+
+// Helper functions and constants
+const _greenCheck = '\u001b[32m✓\u001b[0m';
+const _redCross = '\u001b[31m✗\u001b[0m';
+
+enum ConsoleColor {
+  black(30),
+  red(31),
+  green(32),
+  yellow(33),
+  blue(34),
+  magenta(35),
+  cyan(36),
+  white(37);
+
+  final int code;
+  const ConsoleColor(this.code);
+}
+
+void _printColored(String text, ConsoleColor color, {bool isBold = false}) {
+  final style = isBold ? '1;' : '';
+  print('\u001b[${style}${color.code}m$text\u001b[0m');
 }

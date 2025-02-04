@@ -1,0 +1,24 @@
+name: example
+description: "An example app demonstrating flutter_unused_assets usage."
+publish_to: "none" # L'exemple ne sera pas publié sur pub.dev
+
+environment:
+  sdk: ^3.6.1
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_unused_assets:
+    path: ../ # Indique que l'exemple utilise ton package localement
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
