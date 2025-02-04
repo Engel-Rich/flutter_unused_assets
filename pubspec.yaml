@@ -8,17 +8,13 @@ version: 0.0.1
 homepage: none
 
 environment:
-  sdk: ^3.6.1
-  flutter: ">=1.17.0"
+  sdk: ">=3.6.1 <4.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  # args: ^2.4.2
   path: ^1.9.0
   pubspec_parse: ^1.2.3
-  # yaml: ^3.1.2
-  # file: ^6.1.4
+  args: ^2.4.2
+  file: ^6.1.4
 
 dev_dependencies:
   flutter_test:
@@ -27,4 +23,4 @@ dev_dependencies:
   test: ^1.24.0
 
 executables:
-  flutter_unused_assets: bin/flutter_unused_assets.dart
+  flutter_unused_assets:
