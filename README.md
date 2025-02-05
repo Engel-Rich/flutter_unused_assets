@@ -36,19 +36,35 @@ dev_dependencies:
             url: https://github.com/Engel-Rich/flutter_unused_assets.git
 ```
 
-2. Run the following command in your project directory:
+
+## Usage
+### Examples
+
+Here are some short examples to help you get started with the `flutter_unused_assets` package:
+
+#### Example 1: Basic Usage
+
+Run the following command in your project directory to generate a report of unused assets:
 
 ```bash
 dart run flutter_unused_assets
 ```
 
-## Usage
+#### Example 2: Custom Output Directory
 
-TODO: Include short and useful examples for package users. Add longer examples to the `/example` folder.
+You can specify a custom output directory for the report using the `--output` option:
 
-```dart
-const like = 'sample';
+```bash
+dart run flutter_unused_assets --output=custom_directory/report.json
 ```
+
+For more detailed examples, please refer to the `/example` folder in the repository.
+
+ <!-- Run the following command in your project directory:
+
+```bash
+dart run flutter_unused_assets
+``` -->
 
 ### Help Command
 
