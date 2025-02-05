@@ -10,23 +10,21 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Center(
           child: Column(
+            spacing: 10,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text("Image utilisée :", style: TextStyle(fontSize: 18)),
-              const SizedBox(height: 10),
               Image.asset('assets/study1.png'),
-              const SizedBox(height: 10),
               Container(
                 height: 300,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/study5.png'),
+                    image: AssetImage('assets/book.png'),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
               Image.asset('assets/study3.png'),
-              const SizedBox(height: 10),
+              Image.asset('assets/study2.png'),
               Image.asset('assets/study4.png'),
             ],
           ),
@@ -34,4 +32,9 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class AssetsImages {
+  static const cours = "assets/book.png";
+  static const insta = "assets/insta.png";
 }

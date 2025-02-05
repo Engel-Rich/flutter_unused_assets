@@ -73,38 +73,86 @@ class AssetAnalyzer {
     if (!await libDir.exists()) {
       throw Exception('Le dossier lib n\'existe pas');
     }
-    await for (final entity in libDir.list(recursive: true)) {
-      if (entity is File && entity.path.endsWith('.dart')) {
-        assetPaths.addAll(await _analyzeFile(entity));
-      }
-    }
+    final List<String> allAssets = await analyzeProjectAndGetFiles();
+    await findUsedAssets(allAssets).then(
+      (value) => assetPaths.addAll(value),
+    );
+    // await for (final entity in libDir.list(recursive: true)) {
+    //   if (entity is File && entity.path.endsWith('.dart')) {
+    //     assetPaths.addAll(await _analyzeFile(entity));
+    //   }
+    // }
 
     return assetPaths.toList()..sort();
   }
 
-  /// Analyze a Dart file to find used assets
-  Future<Set<String>> _analyzeFile(File file) async {
-    final content = await file.readAsString();
-    final assets = <String>{};
+  // /// Analyze a Dart file to find used assets
+  // Future<Set<String>> _analyzeFile(File file) async {
+  //   final content = await file.readAsString();
+  //   final assets = <String>{};
 
-    final patterns = [
-      RegExp(r'''Image\.asset\([^)]*?(['"])(.*?)\1''',
-          dotAll: true, caseSensitive: false),
-      RegExp(r'''AssetImage\([^)]*?(['"])(.*?)\1''',
-          dotAll: true, caseSensitive: false),
-    ];
+  //   final patterns = [
+  //     RegExp(r'''Image\.asset\([^)]*?(['"])(.*?)\1''',
+  //         dotAll: true, caseSensitive: false),
+  //     RegExp(r'''AssetImage\([^)]*?(['"])(.*?)\1''',
+  //         dotAll: true, caseSensitive: false),
+  //   ];
 
-    for (final pattern in patterns) {
-      final matches = pattern.allMatches(content);
-      for (final match in matches) {
-        if (match.groupCount >= 1) {
-          final assetPath = match.group(2)!;
-          assets.add(_normalizePath(assetPath));
+  //   for (final pattern in patterns) {
+  //     final matches = pattern.allMatches(content);
+  //     for (final match in matches) {
+  //       if (match.groupCount >= 1) {
+  //         final assetPath = match.group(2)!;
+  //         assets.add(_normalizePath(assetPath));
+  //       }
+  //     }
+  //   }
+
+  //   return assets;
+  // }
+
+  /// Analyse récursivement le dossier lib pour trouver les assets utilisés
+  Future<Set<String>> findUsedAssets(List<String> declaredAssets) async {
+    final usedAssets = <String>{};
+    final libDir = Directory('lib');
+
+    if (!await libDir.exists()) {
+      throw Exception('Le dossier lib n\'existe pas');
+    }
+
+    // Regex améliorée pour capturer tous les types de chaînes
+    final stringLiteralRegex = RegExp(
+      r'''(['"])((?:[^\\'\$"]|\$[^{]|\${[^}]*}|\\['"\\/bfnrt])*)\1''',
+      dotAll: true,
+    );
+
+    await for (final entity in libDir.list(recursive: true)) {
+      if (entity is File && entity.path.endsWith('.dart')) {
+        final content = await entity.readAsString();
+
+        final matches = stringLiteralRegex.allMatches(content);
+        for (final match in matches) {
+          final rawValue = match.group(2)!;
+          final cleanedPath = _cleanAssetPath(rawValue);
+          final normalizedPath = _normalizePath(cleanedPath);
+
+          // Vérification efficace avec Set
+          if (declaredAssets.contains(normalizedPath)) {
+            usedAssets.add(normalizedPath);
+          }
         }
       }
     }
+    return usedAssets;
+  }
 
-    return assets;
+  /// Nettoyage des chemins avec variables
+  String _cleanAssetPath(String rawPath) {
+    return rawPath
+        .replaceAll(RegExp(r'\$[a-zA-Z_]\w*'), '') // Variables simples
+        .replaceAll(RegExp(r'\${[^}]*}'), '') // Interpolations complexes
+        .replaceAll(RegExp(r'/+'), '/') // Normalisation des slashes
+        .trim();
   }
 
   /// Normalize an asset path

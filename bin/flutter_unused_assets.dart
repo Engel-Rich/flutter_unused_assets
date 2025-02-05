@@ -5,7 +5,7 @@ import 'package:args/args.dart';
 import 'package:flutter_unused_assets/flutter_unused_assets.dart';
 
 void main(List<String> arguments) async {
-  printColored("\n\n🔍 Démarrage de l'exécution...\n\n", ConsoleColor.blue);
+  // printColored("\n\n🔍 Démarrage de l'exécution...\n\n", ConsoleColor.blue);
 
   final parser = ArgParser()
     ..addFlag('help', abbr: 'h')
